@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viveport" content="width=device-width,initial-sacale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script>
+
+function validateMobNo(mobno)
+{
+ if(mobno.value.length>0)
+ {
+ var isValid=addDashes(mobno);
+  document.getElementById("phoneError").textContent="Please enter valid PhoneNo";
+  document.getElementById("phoneError").style.display = !isValid ? "block" : "none";
+ return isValid;
+ }
+ else
+ {
+ document.getElementById("phoneError").style.display="none";
+ }
+}
+//to display phone no in format for eg. 123-456-7869
+  function addDashes(f)
+  { 
+  	var result=f.value.toString();
+  	document.getElementById("phoneError").style.display="block";
+  	document.getElementById("phoneError").textContent=result.length.toString();
+  	
+  	if(result.length==3)
+  	{
+  	var startNumber=parseInt(result);
+    setImg(startNumber);
+  	f.value= "("+f.value.substr(0, 3)+")"+"-";
+    }
+    else if(result.length==9)
+    {
+    var midigits=parseInt(result.substr(6,3));
+    displayStatename(midigits);
+    var firststring="("+ result.substr(1, 3)+")" + "-";
+    var secondstring= result.substr(6, 3)+"-";
+    result = firststring+secondstring;
+    f.value=result;
+    }
+    else if(result.length==13)
+    {
+    var firststring="("+ result.substr(1, 3)+")" + "-";
+     var secondstring= result.substr(6, 3)+"-";
+    var thirdstring=result.substr(10, 4);
+    result = firststring+secondstring+thirdstring;
+    f.value=result;
+    }
+    else if(result.length>13)
+    {
+    return false;
+    }
+    return true;
+  }
+//to allow only numbers/digits in phone no
+function isPhonenumberValid(mobno)
+{
+  var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  if(mobno.value.match(phoneno))
+      return true;
+   else
+      return false;
+}
+
+function ValidateName(name)
+{
+	if(name.value.toString().length>0)
+	{
+	var isValid=lettersAndSpaceCheck(name);
+    if(isValid==true)
+    {
+    	isValid=checknamelength(name);
+    }
+    else
+    {
+    	document.getElementById("nameError").textContent="Valid characters: Alphabets and space.";
+    }
+
+	document.getElementById("nameError").style.display = !isValid ? "block" : "none";
+	return isValid;
+   }
+   else
+   {
+   	document.getElementById("nameError").style.display="none";    
+   }
+}
+//to validate the length of each word in name
+function checknamelength(name)
+{
+	var namestr=name.value.toString();
+	const myArr = namestr.split(" ");
+	if(myArr.length<2)
+	{
+		document.getElementById("nameError").textContent="Please enter min 2 words";
+		document.getElementById("nameError").style.display="block";
+		return false;
+	}
+	else
+	{
+		var validchar=true;
+		for (let i = 0; i < myArr.length; i++) 
+		{
+			if(myArr[i].length>4)
+			{
+				validchar=false;
+			}
+        }
+		if(!validchar)
+		{
+			document.getElementById("nameError").textContent="Please enter 4 characters into one word";
+			return false;
+		}
+		else
+		{
+			document.getElementById("nameError").textContent="";
+			return true;
+		}
+	}
+  return true;
+}
+
+//to allowed only letters and spaces in name
+function lettersAndSpaceCheck(name)
+{
+   var regEx =/^[a-zA-Z ]*$/;
+   if(name.value.match(regEx))
+     return true;
+   else
+    return false;
+}    
+//to set image based on starting 3 digits of Phone No
+function setImg(startnumber)
+{
+var imgElm=document.getElementById("imgid")
+if(startnumber>=621 && startnumber<=799)
+{
+imgElm.src='./jio.png';
+}
+else if(startnumber>=801 && startnumber<=920)
+{
+imgElm.src='./idea.png';
+}
+else if(startnumber>=921 && startnumber<=999)
+{
+imgElm.src='./voda.png';
+}
+else
+{
+imgElm.alt='Invalid Number';
+}
+
+}
+
+//to display state based on mid 3 digits of phone no.
+function displayStatename(midNumber)
+{
+ switch(midNumber)
+ {
+ 	case 111: document.getElementById("stateName").textContent="Maharashtra";
+ 	break;
+ 	case 222:document.getElementById("stateName").textContent="Goa";
+ 	break;
+ 	case 333:document.getElementById("stateName").textContent="Karnataka";
+ 	break;
+ 	case 444:document.getElementById("stateName").textContent="Punjab";
+ 	break;
+ 	default:
+
+ }
+}
+
+function onsubmitclick()
+{
+  var Name=document.getElementById("name").value.toString().split(" ");
+  alert("Dear "+Name[0]+" Thank you for your enquiry");
+}
+</script>
+
+
+	 <title>Register Form</title>
+
+</head>
+<body>
+ <form>
+  <table>
+   <tr>
+    <td>Name :</td>
+    <td>
+    	<input type="text" id="name" name="name" onkeydown="ValidateName(this)">
+       <span id="nameError" style="color: Red; display: none">*Valid characters: Alphabets and
+        space.</span>
+    </td>
+   </tr>
+     <tr>
+    <td>Email :</td>
+    <td><input type="email" id="gmail"></td>
+   </tr>
+   <tr>
+    <td>Phone no :</td>
+    <td>
+     <input type="phone" id="PhoneNo" name="PhoneNo" onkeydown="validateMobNo(this)">
+     <span id="phoneError" style="color: Red; display: none"></span>
+      <img id="imgid" src="" alt="" width="24" height="24">
+        <span id="stateName"></span>
+    </td>
+   </tr>
+
+   <tr>
+   	<td></td>
+    <td><input type="button" id="submit" value="Submit" onclick="onsubmitclick()"></td>
+   </tr>
+  </table>
+ </form>
+</body>
+</html>
